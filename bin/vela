@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+# Launcher for Vela CLI
+# Prefers the Rust binary if available; falls back to Python during migration.
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+# 1) Use compiled Rust binary if present
+if [ -x "$ROOT_DIR/target/release/vela" ]; then
+  exec "$ROOT_DIR/target/release/vela" "$@"
+fi
+
+# 2) Try to run via cargo if cli-rs exists
+if [ -f "$ROOT_DIR/Cargo.toml" ]; then
+  exec cargo run -q --manifest-path "$ROOT_DIR/Cargo.toml" -- "$@"
+fi
+
+# 3) Fallback: Python module (legacy)
+cd "$ROOT_DIR/src" || exit 1
+python -m vela "$@"

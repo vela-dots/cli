@@ -1,0 +1,30 @@
+[palette]
+base = "#{{ $surface }}"
+text = "#{{ $onSurface }}"
+muted = "#{{ $onSurfaceVariant }}"
+primary = "#{{ $primary }}"
+secondary = "#{{ $secondary }}"
+tertiary = "#{{ $tertiary }}"
+error = "#{{ $error }}"
+
+"ui.background" = { bg = "base" }
+"ui.text" = { fg = "text" }
+"ui.cursor" = { fg = "text", bg = "base" }
+"ui.selection" = { bg = "secondary" }
+"ui.statusline" = { fg = "text", bg = "base" }
+"ui.statusline.inactive" = { fg = "muted", bg = "base" }
+
+comment = { fg = "muted" }
+string = { fg = "tertiary" }
+keyword = { fg = "primary" }
+function = { fg = "secondary" }
+type = { fg = "tertiary" }
+variable = { fg = "text" }
+constant = { fg = "secondary" }
+number = { fg = "secondary" }
+
+"diagnostic.error" = { fg = "error" }
+"diagnostic.warning" = { fg = "secondary" }
+"diagnostic.info" = { fg = "primary" }
+"diagnostic.hint" = { fg = "muted" }
+

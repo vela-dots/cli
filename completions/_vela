@@ -1,0 +1,128 @@
+#compdef vela
+
+_vela() {
+  local -a subcmds
+  subcmds=(
+    'shell:Start the shell or message it'
+    'toggle:Toggle a special workspace'
+    'scheme:Manage the color scheme'
+    'screenshot:Take a screenshot'
+    'record:Start/stop a screen recording'
+    'clipboard:Open clipboard history'
+    'emoji:Emoji/glyph utilities'
+    'wallpaper:Manage wallpaper'
+    'resizer:Window resizer daemon/tools'
+  )
+
+  local state curcontext="$curcontext" line
+  typeset -A opt_args
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[Show help]' \
+    '(-v --version)'{-v,--version}'[Print extended version info]' \
+    '*::subcommand:->subcmd'
+
+  case $state in
+    subcmd)
+      local -a cmds; cmds=(${subcmds})
+      _describe -t commands 'vela subcommand' cmds && return
+      ;;
+  esac
+
+  case $words[1] in
+    shell)
+      _arguments -C \
+        '(-d --daemon)'{-d,--daemon}'[Start the shell detached]' \
+        '(-s --show)'{-s,--show}'[Print all IPC commands]' \
+        '(-l --log)'{-l,--log}'[Print the shell log]' \
+        '(-k --kill)'{-k,--kill}'[Kill the shell]' \
+        '--log-rules=[Log rules to apply]:rules:_guard "^-*" pattern' \
+        '*:message:->message'
+      ;;
+    toggle)
+      _arguments '*:workspace name: '
+      ;;
+    scheme)
+      local -a scheme_subs
+      scheme_subs=(
+        'list:List available schemes'
+        'get:Get scheme properties'
+        'set:Set the current scheme'
+      )
+      if (( CURRENT == 2 )); then
+        _describe -t commands 'scheme subcommand' scheme_subs
+      else
+        case $words[2] in
+          list)
+            _arguments \
+              '(-n --names)'{-n,--names}'[List scheme names]' \
+              '(-f --flavors)'{-f,--flavors}'[List scheme flavors]' \
+              '(-m --modes)'{-m,--modes}'[List scheme modes]' \
+              '(-v --variants)'{-v,--variants}'[List scheme variants]'
+            ;;
+          get)
+            _arguments \
+              '(-n --name)'{-n,--name}'[Print the current scheme name]' \
+              '(-f --flavor)'{-f,--flavor}'[Print the current scheme flavor]' \
+              '(-m --mode)'{-m,--mode}'[Print the current scheme mode]' \
+              '(-v --variant)'{-v,--variant}'[Print the current scheme variant]'
+            ;;
+          set)
+            local -a names flavors modes variants
+            names=(${(f)"$(command vela scheme list -n 2>/dev/null)"})
+            flavors=(${(f)"$(command vela scheme list -f 2>/dev/null)"})
+            modes=(dark light)
+            variants=(${(f)"$(command vela scheme list -v 2>/dev/null)"})
+            _arguments -C \
+              '--notify[Send a notification on error]' \
+              '(-r --random)'{-r,--random}'[Switch to a random scheme]' \
+              '(-n --name)'{-n,--name}'[Set scheme name]:name:(( ${names//:/\:} ))' \
+              '(-f --flavor)'{-f,--flavor}'[Set scheme flavor]:flavor:(( ${flavors//:/\:} ))' \
+              '(-m --mode)'{-m,--mode}'[Set scheme mode]:mode:(dark light)' \
+              '(-v --variant)'{-v,--variant}'[Set scheme variant]:variant:(( ${variants//:/\:} ))'
+            ;;
+        esac
+      fi
+      ;;
+    screenshot)
+      _arguments \
+        '(-r --region)'{-r,--region}'[Capture region (optional geometry or "slurp")]::geometry:(slurp)' \
+        '(-f --freeze)'{-f,--freeze}'[Freeze while selecting region]'
+      ;;
+    record)
+      _arguments \
+        '(-r --region)'{-r,--region}'[Capture region (optional geometry or "slurp")]::geometry:(slurp)' \
+        '(-s --sound)'{-s,--sound}'[Capture sound]'
+      ;;
+    clipboard)
+      _arguments '(-d --delete)'{-d,--delete}'[Delete from clipboard history]'
+      ;;
+    emoji)
+      _arguments \
+        '(-p --picker)'{-p,--picker}'[Open emoji/glyph picker]' \
+        '(-f --fetch)'{-f,--fetch}'[Fetch emoji/glyph data from remote]'
+      ;;
+    wallpaper)
+      _arguments -C \
+        '(-p --print)'{-p,--print}'[Print the scheme for a wallpaper]:path:_files' \
+        '(-r --random)'{-r,--random}'[Switch to a random wallpaper in directory]:dir:_files -/' \
+        '(-f --file)'{-f,--file}'[The wallpaper file to switch to]:file:_files' \
+        '(-n --no-filter)'{-n,--"no-filter"}'[Do not filter by size]' \
+        '(-t --threshold)'{-t,--threshold}'[The threshold to filter by]:percent' \
+        '(-N --no-smart)'{-N,--"no-smart"}'[Disable smart mode switching]'
+      ;;
+    resizer)
+      _arguments \
+        '(-d --daemon)'{-d,--daemon}'[Start in daemon mode]' \
+        '1:pattern:(active pip)' \
+        '2:match-type:(titleContains titleExact titleRegex initialTitle)' \
+        '3:width' \
+        '4:height' \
+        '5:actions:(float center pip)'
+      ;;
+    *) ;;
+  esac
+}
+
+_vela "$@"
+

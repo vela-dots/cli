@@ -1,0 +1,40 @@
+# Updates the emoji/glyph list in src/vela/data/emojis.txt
+
+name: Update emojis
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * 0"
+
+jobs:
+    update:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Build Vela CLI (Rust)
+              run: |
+                  cargo build --release --manifest-path cli/Cargo.toml
+
+            - name: Fetch emojis
+              run: ./cli/target/release/vela emoji -f
+
+            - name: Check for changes
+              id: check
+              run: echo modified=$(git diff --exit-code cli/src/vela/data/emojis.txt &>/dev/null && echo 'false' || echo 'true') >> $GITHUB_OUTPUT
+
+            - name: Commit and push changes
+              if: steps.check.outputs.modified == 'true'
+              uses: EndBug/add-and-commit@v9
+              with:
+                  add: cli/src/vela/data/emojis.txt
+                  default_author: github_actions
+                  message: "[CI] emojis: update data"

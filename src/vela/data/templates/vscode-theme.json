@@ -1,0 +1,32 @@
+{
+  "$schema": "vscode://schemas/color-theme",
+  "name": "Vela",
+  "type": "${mode}",
+  "colors": {
+    "editor.foreground": "#{{ $onSurface }}",
+    "editor.background": "#{{ $surface }}",
+    "editor.lineHighlightBackground": "#{{ $surfaceContainer }}",
+    "editor.selectionBackground": "#{{ $secondary }}80",
+    "editorCursor.foreground": "#{{ $primary }}",
+    "editorWhitespace.foreground": "#{{ $outlineVariant }}",
+    "editorIndentGuide.background": "#{{ $outlineVariant }}",
+    "editor.selectionHighlightBackground": "#{{ $secondary }}40",
+    "statusBar.background": "#{{ $surface }}",
+    "statusBar.foreground": "#{{ $onSurface }}",
+    "activityBar.background": "#{{ $surfaceContainer }}",
+    "activityBar.foreground": "#{{ $onSurface }}",
+    "tab.activeBackground": "#{{ $surfaceContainerHigh }}",
+    "tab.inactiveBackground": "#{{ $surface }}",
+    "sideBar.background": "#{{ $surfaceContainer }}",
+    "sideBar.foreground": "#{{ $onSurfaceVariant }}"
+  },
+  "tokenColors": [
+    { "scope": ["comment", "punctuation.definition.comment"], "settings": { "foreground": "#{{ $outline }}" } },
+    { "scope": ["string", "constant.other.symbol"],       "settings": { "foreground": "#{{ $tertiary }}" } },
+    { "scope": ["keyword", "storage.type"],                "settings": { "foreground": "#{{ $primary }}" } },
+    { "scope": ["entity.name.function", "support.function"], "settings": { "foreground": "#{{ $secondary }}" } },
+    { "scope": ["variable", "meta.definition.variable"],  "settings": { "foreground": "#{{ $onSurface }}" } },
+    { "scope": ["entity.name.type", "support.type"],      "settings": { "foreground": "#{{ $primary }}" } },
+    { "scope": ["constant.numeric", "constant.language"], "settings": { "foreground": "#{{ $tertiary }}" } }
+  ]
+}
