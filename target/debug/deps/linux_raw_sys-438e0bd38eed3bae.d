@@ -1,0 +1,10 @@
+/home/storm/.vela/cli/target/debug/deps/linux_raw_sys-438e0bd38eed3bae.d: /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/lib.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/elf.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/auxvec.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/errno.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/general.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/ioctl.rs
+
+/home/storm/.vela/cli/target/debug/deps/liblinux_raw_sys-438e0bd38eed3bae.rmeta: /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/lib.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/elf.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/auxvec.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/errno.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/general.rs /home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/ioctl.rs
+
+/home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/lib.rs:
+/home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/elf.rs:
+/home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/auxvec.rs:
+/home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/errno.rs:
+/home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/general.rs:
+/home/storm/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/linux-raw-sys-0.11.0/src/x86_64/ioctl.rs:
