@@ -28,7 +28,7 @@ enum Commands {
     Screenshot(ScreenshotArgs),    
     Record(RecordArgs),    
     Clipboard(ClipboardArgs),    
-    Eomji(EomjiArgs),    
+    Emoji(EmojiArgs),    
     Wallpaper(WallpaperArgs),    
     Resizer(ResizerArgs),    
     Editor(EditorArgs),    
