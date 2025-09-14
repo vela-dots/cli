@@ -1,7 +1,7 @@
 use anyhow::Result;
 use std::collections::BTreeMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use walkdir::WalkDir;
 use serde_json::json;
 

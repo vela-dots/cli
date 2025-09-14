@@ -4,15 +4,19 @@ use std::os::unix::net::UnixStream;
 use std::io::{Read, Write};
 use std::env;
 
+#[allow(dead_code)]
 fn socket_base() -> Result<String> {
     let xdg = env::var("XDG_RUNTIME_DIR").map_err(|_| anyhow!("XDG_RUNTIME_DIR not set"))?;
     let sig = env::var("HYPRLAND_INSTANCE_SIGNATURE").map_err(|_| anyhow!("HYPRLAND_INSTANCE_SIGNATURE not set"))?;
     Ok(format!("{}/hypr/{}", xdg, sig))
 }
 
+#[allow(dead_code)]
 pub fn socket_path() -> Result<String> { Ok(format!("{}/.socket.sock", socket_base()?)) }
+#[allow(dead_code)]
 pub fn socket2_path() -> Result<String> { Ok(format!("{}/.socket2.sock", socket_base()?)) }
 
+#[allow(dead_code)]
 pub fn message(msg: &str, json: bool) -> Result<Value> {
     let path = socket_path()?;
     let mut stream = UnixStream::connect(path)?;
@@ -26,16 +30,17 @@ pub fn message(msg: &str, json: bool) -> Result<Value> {
     if json { Ok(serde_json::from_str(&s)?) } else { Ok(Value::String(s)) }
 }
 
+#[allow(dead_code)]
 pub fn dispatch(dispatcher: &str, args: &[&str]) -> Result<bool> {
     let msg = format!("dispatch {} {}", dispatcher, args.join(" ")).trim().to_string();
     let v = message(&msg, false)?;
     Ok(matches!(v, Value::String(ref s) if s == "ok"))
 }
 
+#[allow(dead_code)]
 pub fn batch(msgs: &[&str], json: bool) -> Result<Value> {
     let mut payloads: Vec<String> = Vec::new();
     for m in msgs { let mut s = m.to_string(); if json { s = format!("j/{}", s); } payloads.push(s); }
     let final_msg = format!("[[BATCH]]{}", payloads.join(";"));
     message(&final_msg, false)
 }
-

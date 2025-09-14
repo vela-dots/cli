@@ -36,6 +36,8 @@ enum Commands {
     Resizer(cmds::ResizerArgs),
     /// Editor integrations (VSCodium)
     Editor(cmds::EditorArgs),
+    /// Install operations (Rust-based installer)
+    Install(cmds::InstallArgs),
 }
 
 fn main() -> Result<()> {
@@ -54,6 +56,7 @@ fn main() -> Result<()> {
         Some(Commands::Wallpaper(a)) => cmds::cmd_wallpaper(a),
         Some(Commands::Resizer(a)) => cmds::cmd_resizer(a),
         Some(Commands::Editor(a)) => cmds::cmd_editor(a),
+        Some(Commands::Install(a)) => cmds::cmd_install(a),
         None => { let _ = Cli::command().print_help(); println!(); Ok(()) }
     }
 }

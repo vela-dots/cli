@@ -1,13 +1,12 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::paths::{VPATHS, ensure_parent};
-use crate::util::run;
 use crate::theme;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

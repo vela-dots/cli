@@ -11,9 +11,9 @@ pub fn notify(args: &[&str]) -> Result<String> {
 }
 
 pub fn close_notification(id: &str) {
+    #![allow(dead_code)]
     let _ = Command::new("gdbus").args([
         "call","--session","--dest=org.freedesktop.Notifications","--object-path=/org/freedesktop/Notifications",
         "--method=org.freedesktop.Notifications.CloseNotification", id
     ]).stdout(Stdio::null()).status();
 }
-

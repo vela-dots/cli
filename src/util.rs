@@ -2,7 +2,7 @@ use anyhow::{anyhow, Result};
 use sha2::Digest;
 use std::fs;
 use std::io::Read;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::{Command, Stdio};
 
 pub fn run(cmd: &str, args: &[&str]) -> Result<()> {
@@ -31,4 +31,3 @@ pub fn hash_file(path: &Path) -> Result<String> {
 pub fn is_valid_image(p: &Path) -> bool {
     matches!(p.extension().and_then(|s| s.to_str()), Some("jpg"|"jpeg"|"png"|"webp"|"tif"|"tiff"))
 }
-

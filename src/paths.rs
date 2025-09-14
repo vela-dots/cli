@@ -25,6 +25,7 @@ fn xdg_paths() -> XdgPaths {
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub struct VelaPaths {
     pub config_dir: PathBuf,
     pub data_dir: PathBuf,

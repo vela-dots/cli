@@ -1,13 +1,13 @@
 use anyhow::{anyhow, Result};
-use image::io::Reader as ImageReader;
+use image::ImageReader;
 use image::{imageops::FilterType, GenericImageView};
-use serde_json::{json, Map, Value};
+use serde_json::json;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+// use std::process::Command;
 use walkdir::WalkDir;
 
-use crate::notify::notify;
+// use crate::notify::notify;
 use crate::paths::{VPATHS, ensure_parent};
 use crate::scheme::{scheme_state_load, scheme_state_save, read_colors_from_file};
 use crate::util::{hash_file, is_valid_image};
@@ -48,8 +48,7 @@ fn detect_smart_opts(img: &image::DynamicImage) -> (String, String) {
     let cf = calc_colorfulness(img);
     let variant = if cf < 10.0 { "neutral" } else if cf < 20.0 { "content" } else { "tonalspot" };
     // Mode by brightness of downscaled 1x1
-    let mut i = img.clone();
-    let i = image::imageops::resize(&i.to_rgb8(), 1, 1, FilterType::Lanczos3);
+    let i = image::imageops::resize(&img.to_rgb8(), 1, 1, FilterType::Lanczos3);
     let p = i.get_pixel(0, 0);
     let r = p[0] as f64; let g = p[1] as f64; let b = p[2] as f64;
     let y = 0.2126*r + 0.7152*g + 0.0722*b;
@@ -92,7 +91,7 @@ pub fn wallpaper_set(path: &Path, no_smart: bool) -> Result<()> {
     Ok(())
 }
 
-pub fn wallpapers_in(dir: &Path, no_filter: bool, _threshold: f32) -> Result<Vec<PathBuf>> {
+pub fn wallpapers_in(dir: &Path, _no_filter: bool, _threshold: f32) -> Result<Vec<PathBuf>> {
     let mut out = vec![];
     if !dir.is_dir() { return Ok(out); }
     for e in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
@@ -109,4 +108,3 @@ pub fn cmd_wallpaper_print(path: Option<PathBuf>) -> Result<()> {
     if let Some(p) = p { println!("{}", json!({"name":"dynamic","flavor":"default","mode":"dark","variant":"tonalspot","file":p}).to_string()); } else { println!("No wallpaper set"); }
     Ok(())
 }
-

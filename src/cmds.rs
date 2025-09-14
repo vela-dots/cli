@@ -1,11 +1,12 @@
 use anyhow::{anyhow, Result};
-use clap::{Args, ArgAction, Subcommand};
-use serde_json::json;
+use clap::{Args, Subcommand};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::io::Write;
 use rand::seq::SliceRandom;
+use walkdir::WalkDir;
+use regex::Regex;
 use time::OffsetDateTime;
 
 use crate::notify::notify;
@@ -182,6 +183,68 @@ pub fn cmd_editor(args: EditorArgs) -> Result<()> {
             let st = crate::scheme::scheme_state_load();
             crate::theme::apply_colours(&st.colors, &st.mode)?;
             println!("VSCodium theme written.");
+            Ok(())
+        }
+    }
+}
+
+// ---- Install (Rust-based installer) ----
+
+#[derive(Args, Debug)]
+pub struct InstallShellArgs {
+    /// Source directory of the shell (defaults to ~/.vela/shell)
+    #[arg(long)] pub src: Option<PathBuf>,
+    /// Destination QuickShell config dir (defaults to ~/.config/quickshell/vela)
+    #[arg(long)] pub dest: Option<PathBuf>,
+    /// Remove destination before installing
+    #[arg(long, action=clap::ArgAction::SetTrue)] pub purge: bool,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum InstallCmd { Shell(InstallShellArgs) }
+
+#[derive(Args, Debug)]
+pub struct InstallArgs { #[command(subcommand)] pub cmd: InstallCmd }
+
+fn default_shell_src() -> PathBuf { dirs::home_dir().unwrap_or(std::path::PathBuf::from("/")).join(".vela/shell") }
+fn default_shell_dest() -> PathBuf { dirs::home_dir().unwrap_or(std::path::PathBuf::from("/")).join(".config/quickshell/vela") }
+
+fn copy_shell_filtered(src: &std::path::Path, dest: &std::path::Path, purge: bool) -> Result<()> {
+    if purge { let _ = fs::remove_dir_all(dest); }
+    fs::create_dir_all(dest)?;
+    let exts = ["qml","js","png","jpg","jpeg","webp","gif","svg","ttf","otf","woff","woff2"]; 
+    for entry in WalkDir::new(src).into_iter().filter_map(Result::ok) {
+        let path = entry.path();
+        if path.is_dir() { continue; }
+        let allowed = path.extension().and_then(|e| e.to_str()).map(|e| exts.contains(&e.to_lowercase().as_str())).unwrap_or(false);
+        if !allowed { continue; }
+        let rel = path.strip_prefix(src)?;
+        let out = dest.join(rel);
+        if let Some(parent) = out.parent() { fs::create_dir_all(parent)?; }
+        fs::copy(path, &out)?;
+    }
+    // Strip unsupported pragma env lines from all QML files
+    let re = Regex::new(r"^\s*(//\s*)?@?\s*pragma\s+(?i:env)\b.*").unwrap();
+    for entry in WalkDir::new(dest).into_iter().filter_map(Result::ok) {
+        let p = entry.path();
+        if p.extension().and_then(|e| e.to_str()).map(|e| e.eq_ignore_ascii_case("qml")).unwrap_or(false) {
+            if let Ok(s) = fs::read_to_string(p) {
+                let cleaned: String = s.lines().filter(|l| !re.is_match(l)).map(|l| { let mut ln = l.to_string(); ln.push('\n'); ln }).collect();
+                if cleaned != s { fs::write(p, cleaned)?; }
+            }
+        }
+    }
+    Ok(())
+}
+
+pub fn cmd_install(args: InstallArgs) -> Result<()> {
+    match args.cmd {
+        InstallCmd::Shell(a) => {
+            let src = a.src.unwrap_or_else(|| default_shell_src());
+            let dest = a.dest.unwrap_or_else(|| default_shell_dest());
+            if !src.exists() { return Err(anyhow!("shell source not found: {}", src.display())); }
+            copy_shell_filtered(&src, &dest, a.purge)?;
+            println!("Installed shell QML to {}", dest.display());
             Ok(())
         }
     }
