@@ -1,0 +1,25 @@
+pub mod shell;
+pub mod toggle;
+pub mod scheme;
+pub mod screenshot;
+pub mod record;
+pub mod clipboard;
+pub mod emoji;
+pub mod wallpaper;
+pub mod resizer;
+pub mod editor;
+pub mod install;
+pub mod version;
+
+pub use shell::run as run_shell;
+pub use toggle::run as run_toggle;
+pub use scheme::run as run_scheme;
+pub use screenshot::run as run_screenshot;
+pub use record::run as run_record;
+pub use clipboard::run as run_clipboard;
+pub use emoji::run as run_emoji;
+pub use wallpaper::run as run_wallpaper;
+pub use resizer::run as run_resizer;
+pub use editor::run as run_editor;
+pub use install::run as run_install;
+pub use version::print_version;

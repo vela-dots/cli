@@ -1,22 +1,19 @@
-// Migrated from cli-rs/src/main.rs
-mod util;
-mod hypr;
-mod paths;
-mod notify;
-mod scheme;
-mod wallpaper;
-mod theme;
-mod cmds;
-mod languages;
-
 use anyhow::Result;
-use clap::{Parser, Subcommand, ArgAction, CommandFactory};
+use clap::{Parser, Subcommand, Args};
+
+mod cmds;
+mod hypr;
+mod util;
 
 #[derive(Parser, Debug)]
-#[command(name = "vela", disable_version_flag = true, about = "Main control tool for Vela dotfiles")]
+#[command(
+    name = "vela",
+    about = "Main control tool for Vela dotfiles",
+    disable_version_flag = true,
+)]
+
 struct Cli {
-    /// Print extended version info
-    #[arg(short = 'v', long = "version", action = ArgAction::SetTrue)]
+    #[arg(short = 'v', long = "version")]
     version: bool,
 
     #[command(subcommand)]
@@ -25,38 +22,84 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    Shell(cmds::ShellArgs),
-    Toggle { workspace: String },
-    Scheme { #[command(subcommand)] cmd: cmds::SchemeCmd },
-    Screenshot(cmds::ScreenshotArgs),
-    Record(cmds::RecordArgs),
-    Clipboard(cmds::ClipboardArgs),
-    Emoji(cmds::EmojiArgs),
-    Wallpaper(cmds::WallpaperArgs),
-    Resizer(cmds::ResizerArgs),
-    /// Editor integrations (VSCodium)
-    Editor(cmds::EditorArgs),
-    /// Install operations (Rust-based installer)
-    Install(cmds::InstallArgs),
+    Shell(ShellArgs),    
+    Toggle(ToggleArgs),    
+    Scheme(SchemeArgs),    
+    Screenshot(ScreenshotArgs),    
+    Record(RecordArgs),    
+    Clipboard(ClipboardArgs),    
+    Eomji(EomjiArgs),    
+    Wallpaper(WallpaperArgs),    
+    Resizer(ResizerArgs),    
+    Editor(EditorArgs),    
+    Install(InstallArgs),    
 }
+
+#[derive(Args, Debug)]
+struct ShellArgs {
+    #[arg(short, long)]
+    daemon: bool,
+}
+
+#[derive(Args, Debug)]
+struct ToggleArgs {
+    workspace: String,
+}
+
+#[derive(Args, Debug)]
+struct SchemeArgs {
+    #[arg()]
+    action: Vec<String>,
+}
+
+#[derive(Args, Debug)]
+struct ScreenshotArgs {}
+
+#[derive(Args, Debug)]
+struct RecordArgs {}
+
+#[derive(Args, Debug)]
+struct ClipboardArgs {}
+
+#[derive(Args, Debug)]
+struct EomjiArgs {}
+
+#[derive(Args, Debug)]
+struct WallpaperArgs {}
+
+#[derive(Args, Debug)]
+struct ResizerArgs {}
+
+#[derive(Args, Debug)]
+struct EditorArgs {}
+
+#[derive(Args, Debug)]
+struct InstallArgs {}
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    if cli.version { return cmds::cmd_version(); }
+
+    if cli.version {
+        cmds::print_version();
+        return Ok(());
+    }
+
     match cli.command {
-        Some(Commands::Shell(a)) => cmds::cmd_shell(a),
-        Some(Commands::Toggle { workspace }) => cmds::cmd_toggle(workspace),
-        Some(Commands::Scheme { cmd: cmds::SchemeCmd::List { names, flavors, modes, variants } }) => scheme::scheme_list(names, flavors, modes, variants),
-        Some(Commands::Scheme { cmd: cmds::SchemeCmd::Get { name, flavor, mode, variant } }) => scheme::scheme_get(name, flavor, mode, variant),
-        Some(Commands::Scheme { cmd: cmds::SchemeCmd::Set(a) }) => scheme::scheme_set(a),
-        Some(Commands::Screenshot(a)) => cmds::cmd_screenshot(a),
-        Some(Commands::Record(a)) => cmds::cmd_record(a),
-        Some(Commands::Clipboard(a)) => cmds::cmd_clipboard(a),
-        Some(Commands::Emoji(a)) => cmds::cmd_emoji(a),
-        Some(Commands::Wallpaper(a)) => cmds::cmd_wallpaper(a),
-        Some(Commands::Resizer(a)) => cmds::cmd_resizer(a),
-        Some(Commands::Editor(a)) => cmds::cmd_editor(a),
-        Some(Commands::Install(a)) => cmds::cmd_install(a),
-        None => { let _ = Cli::command().print_help(); println!(); Ok(()) }
+        Some(Commands::Shell(args))             => cmds::run_shell(args),
+        Some(Commands::Toggle(args))            => cmds::run_toggle(args),
+        Some(Commands::Scheme(args))            => cmds::run_scheme(args),
+        Some(Commands::Screenshot(args))        => cmds::run_screenshot(args),
+        Some(Commands::Record(args))            => cmds::run_record(args),
+        Some(Commands::Clipboard(args))         => cmds::run_clipboard(args),
+        Some(Commands::Emoji(args))             => cmds::run_emoji(args),
+        Some(Commands::Wallpaper(args))         => cmds::run_wallpaper(args),
+        Some(Commands::Resizer(args))           => cmds::run_resizer(args),
+        Some(Commands::Editor(args))            => cmds::run_editor(args),
+        Some(Commands::Install(args))           => cmds::run_install(args),
+        None => {
+            Cli::command().print_help().ok();
+            println!();
+            Ok(())
+        }
     }
 }
