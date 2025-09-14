@@ -32,7 +32,8 @@ enum Commands {
     Wallpaper(WallpaperArgs),    
     Resizer(ResizerArgs),    
     Editor(EditorArgs),    
-    Install(InstallArgs),    
+    Install(InstallArgs),
+    Version(Version),    
 }
 
 #[derive(Args, Debug)]
@@ -76,13 +77,11 @@ struct EditorArgs {}
 #[derive(Args, Debug)]
 struct InstallArgs {}
 
+#[derive(Args, Debug)]
+struct Version {}
+
 fn main() -> Result<()> {
     let cli = Cli::parse();
-
-    if cli.version {
-        cmds::print_version();
-        return Ok(());
-    }
 
     match cli.command {
         Some(Commands::Shell(args))             => cmds::run_shell(args),
@@ -96,9 +95,8 @@ fn main() -> Result<()> {
         Some(Commands::Resizer(args))           => cmds::run_resizer(args),
         Some(Commands::Editor(args))            => cmds::run_editor(args),
         Some(Commands::Install(args))           => cmds::run_install(args),
+        Some(Commands::Version(cmd))           => cmds::run_version(cmd),
         None => {
-            Cli::command().print_help().ok();
-            println!();
             Ok(())
         }
     }

@@ -22,4 +22,4 @@ pub use wallpaper::run as run_wallpaper;
 pub use resizer::run as run_resizer;
 pub use editor::run as run_editor;
 pub use install::run as run_install;
-pub use version::print_version;
+pub use version::run as run_version;
