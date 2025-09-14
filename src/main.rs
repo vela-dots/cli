@@ -62,7 +62,7 @@ struct RecordArgs {}
 struct ClipboardArgs {}
 
 #[derive(Args, Debug)]
-struct EomjiArgs {}
+struct EmojiArgs {}
 
 #[derive(Args, Debug)]
 struct WallpaperArgs {}
